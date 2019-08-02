@@ -1,0 +1,36 @@
+Theme is only one
+
+Shooter where you have only one bullet
+
+Puzzle game where there is only one level but the same level gets more complex
+
+Bomb puzzle game, but you only have one bomb per level
+
+Treasure collection game but only one slot in bag
+
+Only one bed, game set in a camp where all beds are taken. Only one bed remains for you to take
+Game is a race to get to the last bed
+
+Survival game with only one tool
+
+Only one hope
+
+Screen
+Platformer where screen is reset everytime you get to the end?
+
+Day
+You are the only one immune to a disease and you have only one day to save humanity
+
+Sprite
+Game starts off with the player drawing a sprite
+Game then consists of small minigames where everything is made of that one sprite
+
+Bite
+Cooking game where a random section of food has to be perfect as the judges take only one bite
+
+Road
+Game where there is only one section of road and cars need to get from one point to another
+
+Battery
+RC racing game where there is only one battery left in a car that needs 2, so the battery needs to be swapped from one slot to another
+Each slot determines if the car goes left or right
