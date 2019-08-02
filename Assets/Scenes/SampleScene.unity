@@ -972,6 +972,7 @@ GameObject:
   - component: {fileID: 2015930623}
   - component: {fileID: 2015930625}
   - component: {fileID: 2015930624}
+  - component: {fileID: 2015930626}
   m_Layer: 5
   m_Name: Track
   m_TagString: Untagged
@@ -1035,3 +1036,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2015930622}
   m_CullTransparentMesh: 0
+--- !u!114 &2015930626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015930622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a537dbb7062ff6e46a4d06a5fbfaebe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathImg: {fileID: 2800000, guid: 7cf9fbd667d71424b860c000adaa486d, type: 3}
