@@ -8,9 +8,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float playerSpeed = 2f;
     [SerializeField] float rotationSpeed = 2f;
     [SerializeField] Text lapText;
+    [SerializeField] GameObject lossText;
 
     Track currentTrack;
     CheckpointHandler checkpointHandler;
+    EnemyMovement enemy;
     bool moving = false;
     bool moveLeft = false;
     bool alive = true;
@@ -24,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     void Start() {
         currentTrack = FindObjectOfType<Track>();
         checkpointHandler = GetComponent<CheckpointHandler>();
+        enemy = FindObjectOfType<EnemyMovement>();
     }
 
     void Update()
@@ -45,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
                     movementVector = gameObject.transform.up;
                     rotationAngle = -rotationSpeed * Time.deltaTime;
                 }
-                movementVector *= playerSpeed / 1000f;
+                movementVector *= playerSpeed * Time.deltaTime / 100f;
 
                 gameObject.transform.Rotate(0, 0, rotationAngle, Space.Self);
                 gameObject.transform.Translate(movementVector, Space.World);
@@ -67,6 +70,9 @@ public class PlayerMovement : MonoBehaviour
                 lapText.text = "Lap " + currentLap.ToString() + "/" + currentTrack.Laps;
             }
         }
+        else {
+            enemy.PlayerFinished();
+        }
     }
 
     private Vector2Int PlayerCoordsToImgCoords(Vector2 currPos) {
@@ -75,8 +81,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerDeath()
     {
-        print("Dead");
+        print("Player dead");
         alive = false;
+    }
+
+    public void EnemyFinished() {
+        if (!(checkpointHandler.finished)) {
+            alive = false;
+            lossText.SetActive(true);
+        }
     }
 
     public void Left()
