@@ -8,6 +8,7 @@ public class CheckpointHandler : MonoBehaviour
     [SerializeField] bool[] checkpointStates;
     [SerializeField] private bool startState;
     [SerializeField] int LapNo = 0;
+    public bool finished = false;
 
     void Start()
     {
@@ -34,7 +35,13 @@ public class CheckpointHandler : MonoBehaviour
                 }
             }
         }
+
+        if (LapNo == currTrack.Laps+1) {
+            finished = true;
+        }
     }
+
+    public int GetLapNo() { return LapNo; }
 
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject == currTrack.start.gameObject)

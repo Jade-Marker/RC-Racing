@@ -1,16 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float playerSpeed = 2f;
     [SerializeField] float rotationSpeed = 2f;
+    [SerializeField] Text lapText;
 
     Track currentTrack;
+    CheckpointHandler checkpointHandler;
     bool moving = false;
     bool moveLeft = false;
     bool alive = true;
+    int currentLap = 0;
 
     const float a = 1440f/13.332f;
     const float b = 108f;
@@ -19,35 +23,47 @@ public class PlayerMovement : MonoBehaviour
 
     void Start() {
         currentTrack = FindObjectOfType<Track>();
+        checkpointHandler = GetComponent<CheckpointHandler>();
     }
 
     void Update()
     {
-        if (moving && alive)
+        if (!(checkpointHandler.finished))
         {
-            Vector3 movementVector = new Vector3();
-            float rotationAngle = 0f;
+            if (moving && alive)
+            {
+                Vector3 movementVector = new Vector3();
+                float rotationAngle = 0f;
 
-            if (moveLeft) {
-                movementVector = gameObject.transform.up;
-                rotationAngle = rotationSpeed * Time.deltaTime;
+                if (moveLeft)
+                {
+                    movementVector = gameObject.transform.up;
+                    rotationAngle = rotationSpeed * Time.deltaTime;
+                }
+                else
+                {
+                    movementVector = gameObject.transform.up;
+                    rotationAngle = -rotationSpeed * Time.deltaTime;
+                }
+                movementVector *= playerSpeed / 1000f;
+
+                gameObject.transform.Rotate(0, 0, rotationAngle, Space.Self);
+                gameObject.transform.Translate(movementVector, Space.World);
             }
-            else {
-                movementVector = gameObject.transform.up;
-                rotationAngle = -rotationSpeed * Time.deltaTime;
+
+            Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
+            Vector2Int imgPos = PlayerCoordsToImgCoords(currPos);
+            Color posColor = currentTrack.pathImg.GetPixel(imgPos.x, imgPos.y);
+            if (posColor == Color.black)
+            {
+                PlayerDeath();
             }
-            movementVector *= playerSpeed / 1000f;
 
-            gameObject.transform.Rotate(0, 0, rotationAngle, Space.Self);
-            gameObject.transform.Translate(movementVector, Space.World);
-        }
-
-        Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
-        Vector2Int imgPos = PlayerCoordsToImgCoords(currPos);
-        Color posColor = currentTrack.pathImg.GetPixel(imgPos.x, imgPos.y);
-        if (posColor == Color.black)
-        {
-            PlayerDeath();
+            if (currentLap != checkpointHandler.GetLapNo())
+            {
+                currentLap = checkpointHandler.GetLapNo();
+                lapText.text = "Lap " + currentLap.ToString() + "/" + currentTrack.Laps;
+            }
         }
     }
 
