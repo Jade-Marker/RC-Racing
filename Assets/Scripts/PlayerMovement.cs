@@ -43,12 +43,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
-        Vector2Int imgPos = new Vector2Int(Mathf.RoundToInt(a * currPos.x + c), Mathf.RoundToInt(b * currPos.y + d));
+        Vector2Int imgPos = PlayerCoordsToImgCoords(currPos);
         Color posColor = currentTrack.pathImg.GetPixel(imgPos.x, imgPos.y);
         if (posColor == Color.black)
         {
             PlayerDeath();
         }
+    }
+
+    private Vector2Int PlayerCoordsToImgCoords(Vector2 currPos) {
+        return new Vector2Int(Mathf.RoundToInt(a * currPos.x + c), Mathf.RoundToInt(b * currPos.y + d));
     }
 
     private void PlayerDeath()

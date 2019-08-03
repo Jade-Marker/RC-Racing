@@ -5,4 +5,7 @@ using UnityEngine;
 public class Track : MonoBehaviour
 {
     public Texture2D pathImg;
+    public Checkpoint[] checkpoints;
+    public Checkpoint start;
+    public int Laps;
 }
