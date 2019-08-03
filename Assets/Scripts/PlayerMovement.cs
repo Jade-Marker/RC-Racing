@@ -49,6 +49,8 @@ public class PlayerMovement : MonoBehaviour
 
                 gameObject.transform.Rotate(0, 0, rotationAngle, Space.Self);
                 gameObject.transform.Translate(movementVector, Space.World);
+
+                moving = false;
             }
 
             Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
