@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     EnemyMovement enemy;
     AudioSource audioSource;
     SpriteRenderer playerSprite;
+    LevelManager levelManager;
     bool moving = false;
     bool moveLeft = false;
     bool alive = true;
@@ -34,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
         enemy = FindObjectOfType<EnemyMovement>();
         audioSource = GetComponent<AudioSource>();
         playerSprite = GetComponent<SpriteRenderer>();
+        levelManager = FindObjectOfType<LevelManager>();
     }
 
     void Update()
@@ -92,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
         playerSprite.enabled = false;
         var vfx = Instantiate(deathFx, transform.position, Quaternion.identity);
         Destroy(vfx.gameObject, vfx.main.duration);
+        levelManager.RestartLevel(5f);
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
@@ -102,6 +105,7 @@ public class PlayerMovement : MonoBehaviour
         if (!(checkpointHandler.finished)) {
             alive = false;
             lossText.SetActive(true);
+            levelManager.RestartLevel(5f);
         }
     }
 

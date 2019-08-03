@@ -14,6 +14,7 @@ public class EnemyMovement : MonoBehaviour
     CheckpointHandler checkpointHandler;
     PlayerMovement player;
     SpriteRenderer enemySprite;
+    LevelManager levelManager;
     bool alive = true;
     int currentLap = 0;
 
@@ -28,6 +29,7 @@ public class EnemyMovement : MonoBehaviour
         checkpointHandler = GetComponent<CheckpointHandler>();
         player = FindObjectOfType<PlayerMovement>();
         enemySprite = GetComponent<SpriteRenderer>();
+        levelManager = FindObjectOfType<LevelManager>();
     }
 
     void Update()
@@ -143,6 +145,7 @@ public class EnemyMovement : MonoBehaviour
         {
             alive = false;
             winText.SetActive(true);
+            levelManager.NextLevel(2f);
         }
     }
 }
