@@ -8,10 +8,12 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float rotationSpeed = 2f;
     [SerializeField] int lookDistance = 5;
     [SerializeField] GameObject winText;
+    [SerializeField] ParticleSystem deathFx;
 
     Track currentTrack;
     CheckpointHandler checkpointHandler;
     PlayerMovement player;
+    SpriteRenderer enemySprite;
     bool alive = true;
     int currentLap = 0;
 
@@ -25,6 +27,7 @@ public class EnemyMovement : MonoBehaviour
         currentTrack = FindObjectOfType<Track>();
         checkpointHandler = GetComponent<CheckpointHandler>();
         player = FindObjectOfType<PlayerMovement>();
+        enemySprite = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -100,22 +103,23 @@ public class EnemyMovement : MonoBehaviour
 
                 gameObject.transform.Rotate(0, 0, rotationAngle, Space.Self);
                 gameObject.transform.Translate(movementVector, Space.World);
-            }
 
-            Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
-            Vector2Int imgPos = EnemyCoordsToImgCoords(currPos);
-            Color posColor = currentTrack.pathImg.GetPixel(imgPos.x, imgPos.y);
-            if (posColor == Color.black)
-            {
-                EnemyDeath();
-            }
+                Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
+                Vector2Int imgPos = EnemyCoordsToImgCoords(currPos);
+                Color posColor = currentTrack.pathImg.GetPixel(imgPos.x, imgPos.y);
+                if (posColor == Color.black)
+                {
+                    EnemyDeath();
+                }
 
-            if (currentLap != checkpointHandler.GetLapNo())
-            {
-                currentLap = checkpointHandler.GetLapNo();
+                if (currentLap != checkpointHandler.GetLapNo())
+                {
+                    currentLap = checkpointHandler.GetLapNo();
+                }
             }
         }
-        else {
+        else
+        {
             player.EnemyFinished();
         }
     }
@@ -127,8 +131,10 @@ public class EnemyMovement : MonoBehaviour
 
     private void EnemyDeath()
     {
-        print("Enemy dead");
         alive = false;
+        enemySprite.enabled = false;
+        var vfx = Instantiate(deathFx, transform.position, Quaternion.identity);
+        Destroy(vfx.gameObject, vfx.main.duration);
     }
 
     public void PlayerFinished()

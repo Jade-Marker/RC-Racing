@@ -9,10 +9,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float rotationSpeed = 2f;
     [SerializeField] Text lapText;
     [SerializeField] GameObject lossText;
+    [SerializeField] AudioClip crashSound;
+    [SerializeField][Range(0f,1f)] float crashVolume = 1f;
+    [SerializeField] ParticleSystem deathFx;
 
     Track currentTrack;
     CheckpointHandler checkpointHandler;
     EnemyMovement enemy;
+    AudioSource audioSource;
+    SpriteRenderer playerSprite;
     bool moving = false;
     bool moveLeft = false;
     bool alive = true;
@@ -27,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
         currentTrack = FindObjectOfType<Track>();
         checkpointHandler = GetComponent<CheckpointHandler>();
         enemy = FindObjectOfType<EnemyMovement>();
+        audioSource = GetComponent<AudioSource>();
+        playerSprite = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -54,20 +61,20 @@ public class PlayerMovement : MonoBehaviour
                 gameObject.transform.Translate(movementVector, Space.World);
 
                 moving = false;
-            }
 
-            Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
-            Vector2Int imgPos = PlayerCoordsToImgCoords(currPos);
-            Color posColor = currentTrack.pathImg.GetPixel(imgPos.x, imgPos.y);
-            if (posColor == Color.black)
-            {
-                PlayerDeath();
-            }
+                Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
+                Vector2Int imgPos = PlayerCoordsToImgCoords(currPos);
+                Color posColor = currentTrack.pathImg.GetPixel(imgPos.x, imgPos.y);
+                if (posColor == Color.black)
+                {
+                    PlayerDeath();
+                }
 
-            if (currentLap != checkpointHandler.GetLapNo())
-            {
-                currentLap = checkpointHandler.GetLapNo();
-                lapText.text = "Lap " + currentLap.ToString() + "/" + currentTrack.Laps;
+                if (currentLap != checkpointHandler.GetLapNo())
+                {
+                    currentLap = checkpointHandler.GetLapNo();
+                    lapText.text = "Lap " + currentLap.ToString() + "/" + currentTrack.Laps;
+                }
             }
         }
         else {
@@ -81,8 +88,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerDeath()
     {
-        print("Player dead");
         alive = false;
+        playerSprite.enabled = false;
+        var vfx = Instantiate(deathFx, transform.position, Quaternion.identity);
+        Destroy(vfx.gameObject, vfx.main.duration);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        audioSource.PlayOneShot(crashSound, crashVolume);
     }
 
     public void EnemyFinished() {
