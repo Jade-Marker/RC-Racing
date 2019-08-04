@@ -886,7 +886,7 @@ MonoBehaviour:
   - {fileID: 0}
   start: {fileID: 0}
   Laps: 3
-  song: {fileID: 8300000, guid: ef94a420620f94440a06bc385df3977a, type: 3}
+  song: {fileID: 8300000, guid: 717ded0322652e14e922a65bb700ef3c, type: 3}
 --- !u!222 &940612667003190342
 CanvasRenderer:
   m_ObjectHideFlags: 0
