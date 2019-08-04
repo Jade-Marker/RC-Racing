@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startText: {fileID: 0}
+  count: {fileID: 8300000, guid: 365ecf1b6a31ac246bd80504dccf32d6, type: 3}
+  start: {fileID: 8300000, guid: 3858ef8ad198fd948a21822cd4933038, type: 3}
 --- !u!82 &6474394185335283948
 AudioSource:
   m_ObjectHideFlags: 0

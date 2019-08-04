@@ -9,6 +9,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] int lookDistance = 5;
     [SerializeField] GameObject winText;
     [SerializeField] ParticleSystem deathFx;
+    [SerializeField] Path[] enemyPath;
 
     Track currentTrack;
     CheckpointHandler checkpointHandler;
@@ -17,6 +18,7 @@ public class EnemyMovement : MonoBehaviour
     LevelManager levelManager;
     bool alive = true;
     int currentLap = 0;
+    int currentPath = 0;
 
     const float a = 1440f / 13.332f;
     const float b = 108f;
@@ -38,73 +40,25 @@ public class EnemyMovement : MonoBehaviour
         {
             if (alive)
             {
-                Vector3 movementVector = new Vector3();
-                float rotationAngle = 0f;
+                Vector2 newPos = Vector2.MoveTowards(transform.position, enemyPath[currentPath].transform.position, enemySpeed * Time.deltaTime);
+                transform.position = new Vector3(newPos.x, newPos.y, transform.position.z);
 
-                bool movingForward = false;
-                bool turning = false;
-                bool turningLeft = false;
 
-                Vector2Int imgCheck = EnemyCoordsToImgCoords(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y));
-                float currentRotation = transform.rotation.eulerAngles.z;
 
-                imgCheck.x -= Mathf.RoundToInt(lookDistance * Mathf.Sin(currentRotation * Mathf.Deg2Rad));
-                imgCheck.y += Mathf.RoundToInt(lookDistance * Mathf.Cos(currentRotation * Mathf.Deg2Rad));
+                var rotation = transform.rotation.eulerAngles;
+                rotation.x = 0;
+                rotation.y = 0;
+                transform.rotation = Quaternion.Euler(rotation);
 
-                Color imgCheckColor = currentTrack.pathImg.GetPixel(imgCheck.x, imgCheck.y);
-                if (imgCheckColor != Color.black)
-                {
-                    movingForward = true;
+                if (transform.position == enemyPath[currentPath].transform.position) {
+                    currentPath++;
                 }
 
-                imgCheck = EnemyCoordsToImgCoords(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y));
-                currentRotation += 90f;
-
-                imgCheck.x -= Mathf.RoundToInt(lookDistance * Mathf.Sin(currentRotation * Mathf.Deg2Rad));
-                imgCheck.y += Mathf.RoundToInt(lookDistance * Mathf.Cos(currentRotation * Mathf.Deg2Rad));
-
-                imgCheckColor = currentTrack.pathImg.GetPixel(imgCheck.x, imgCheck.y);
-                if (imgCheckColor != Color.black)
-                {
-                    turning = true;
-                    turningLeft = true;
+                if (currentPath >= enemyPath.Length) {
+                    currentPath = 0;
                 }
 
-                imgCheck = EnemyCoordsToImgCoords(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y));
-                currentRotation = transform.rotation.eulerAngles.z;
-                currentRotation -= 90f;
-
-                imgCheck.x -= Mathf.RoundToInt(lookDistance * Mathf.Sin(currentRotation * Mathf.Deg2Rad));
-                imgCheck.y += Mathf.RoundToInt(lookDistance * Mathf.Cos(currentRotation * Mathf.Deg2Rad));
-
-                imgCheckColor = currentTrack.pathImg.GetPixel(imgCheck.x, imgCheck.y);
-                if (imgCheckColor != Color.black)
-                {
-                    turning = true;
-                    turningLeft = false;
-                }
-
-                if (movingForward)
-                {
-                    movementVector = gameObject.transform.up;
-                }
-
-                if (turning)
-                {
-                    if (turningLeft)
-                    {
-                        rotationAngle = rotationSpeed * Time.deltaTime;
-                    }
-                    else
-                    {
-                        rotationAngle = -rotationSpeed * Time.deltaTime;
-                    }
-                }
-
-                movementVector *= enemySpeed * Time.deltaTime / 100f;
-
-                gameObject.transform.Rotate(0, 0, rotationAngle, Space.Self);
-                gameObject.transform.Translate(movementVector, Space.World);
+                LookAt2D(enemyPath[currentPath].transform, rotationSpeed, FacingDirection.RIGHT);
 
                 Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
                 Vector2Int imgPos = EnemyCoordsToImgCoords(currPos);
@@ -124,6 +78,23 @@ public class EnemyMovement : MonoBehaviour
         {
             player.EnemyFinished();
         }
+    }
+
+    enum FacingDirection
+    {
+        UP = 270,
+        DOWN = 90,
+        LEFT = 180,
+        RIGHT = 0
+    }
+    //source: https://answers.unity.com/questions/654222/make-sprite-look-at-vector2-in-unity-2d-1.html
+    void LookAt2D(Transform theTarget, float theSpeed, FacingDirection facing)
+    {
+        Vector3 vectorToTarget = theTarget.position - transform.position;
+        float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
+        angle -= (float)facing;
+        Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * theSpeed);
     }
 
     private Vector2Int EnemyCoordsToImgCoords(Vector2 currPos)
