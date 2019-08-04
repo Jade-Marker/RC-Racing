@@ -282,7 +282,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: cb863e77af76b6f44af18f951d25a98e, type: 3}
-    m_FontSize: 43
+    m_FontSize: 36
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -295,7 +295,9 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: It's time for the RC racing championship races. Your opponent has cheated
     and stolen the batteries for your remote. You check your pockets to find you have
-    only one battery left. You'll have to keep moving the battery if you want to win!
+    only one battery left. Luckily your green car can run off one battery but it can
+    only turn in one direction with one battery. You'll have to keep moving the battery
+    if you want to win!
 --- !u!222 &162321569
 CanvasRenderer:
   m_ObjectHideFlags: 0
