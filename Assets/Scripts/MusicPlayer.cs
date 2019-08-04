@@ -4,26 +4,48 @@ using UnityEngine;
 
 public class MusicPlayer : MonoBehaviour
 {
+    [SerializeField] AudioClip defaultClip;
+
     Track currentTrack;
     AudioSource audioSource;
 
     void Start()
     {
-        currentTrack = FindObjectOfType<Track>();
-        //audioSource
+        //currentTrack = FindObjectOfType<Track>();
 
-        int numMusicPlayers = FindObjectsOfType<MusicPlayer>().Length;
-        if (numMusicPlayers > 1)
+        //int numMusicPlayers = FindObjectsOfType<MusicPlayer>().Length;
+        //if (numMusicPlayers > 1)
+        //{
+        //    Destroy(gameObject);
+        //}
+        //else
+        //{
+        //    DontDestroyOnLoad(gameObject);
+        //}
+
+        DontDestroyOnLoad(gameObject);
+        PlayTrackSong();
+    }
+
+    public void PlayTrackSong() {
+        try
         {
-            Destroy(gameObject);
+            currentTrack = FindObjectOfType<Track>();
+            audioSource = GetComponent<AudioSource>();
+            audioSource.clip = currentTrack.song;
+            audioSource.Play();
         }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
+        catch {
+            PlayGivenSong(defaultClip);
         }
     }
 
-    // Update is called once per frame
+    public void PlayGivenSong(AudioClip song) {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = song;
+        audioSource.Play();
+    }
+
     void Update()
     {
         

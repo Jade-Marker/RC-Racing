@@ -8,8 +8,12 @@ public class LevelManager : MonoBehaviour
     [SerializeField]int currentLevel = 0;
     [SerializeField]bool sceneLoading = false;
 
+    MusicPlayer musicPlayer;
+
     void Start()
     {
+        musicPlayer = FindObjectOfType<MusicPlayer>();
+
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         int numLevelManagers = FindObjectsOfType<LevelManager>().Length;
@@ -26,6 +30,7 @@ public class LevelManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         sceneLoading = false;
+        musicPlayer.PlayTrackSong();
     }
 
     public void NextLevel(float waitTime) {
