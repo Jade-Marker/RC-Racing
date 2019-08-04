@@ -6,8 +6,8 @@ public class Battery : MonoBehaviour
 {
     [SerializeField] GameObject leftSlot;
     [SerializeField] GameObject rightSlot;
-    [SerializeField] float imageWidth = 274 / 2;
-    [SerializeField] float imageHeight = 96 / 2;
+    [SerializeField] float imageWidth = 93 / 2;
+    [SerializeField] float imageHeight = 333 / 2;
 
 
     RectTransform rectTransform;
@@ -27,9 +27,9 @@ public class Battery : MonoBehaviour
             Vector2 localSpaceCorrected = new Vector2(localSpace.y,localSpace.x);
             if ((localSpaceCorrected.y >= rectTransform.position.y - imageHeight) && (localSpaceCorrected.y <= rectTransform.position.y + imageHeight)) {
                 if ((localSpaceCorrected.x >= rectTransform.position.x - imageWidth) && (localSpaceCorrected.x <= rectTransform.position.x + imageWidth)) {
-                    if ((mousePos.x - 274 / 2 >= 1440) && (mousePos.x + 274 / 2 <= 1920))
+                    if ((mousePos.x - imageWidth >= 1440) && (mousePos.x + imageWidth <= 1920))
                     {
-                        if ((mousePos.y - 96 / 2 >= 0) && (mousePos.y + 96 / 2 <= 1080))
+                        if ((mousePos.y - imageHeight >= 0) && (mousePos.y + imageHeight <= 1080))
                         {
                             float oldZ = rectTransform.position.z;
                             rectTransform.position = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, Input.mousePosition.z));
