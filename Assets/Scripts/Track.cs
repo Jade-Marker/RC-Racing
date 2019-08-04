@@ -8,4 +8,5 @@ public class Track : MonoBehaviour
     public Checkpoint[] checkpoints;
     public Checkpoint start;
     public int Laps;
+    public AudioClip song;
 }
