@@ -6,7 +6,7 @@ public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] float enemySpeed = 2f;
     [SerializeField] float rotationSpeed = 2f;
-    [SerializeField] int lookDistance = 5;
+    [SerializeField] float lookDistance = 5f;
     [SerializeField] GameObject winText;
     [SerializeField] ParticleSystem deathFx;
     [SerializeField] Path[] enemyPath;
@@ -16,6 +16,7 @@ public class EnemyMovement : MonoBehaviour
     PlayerMovement player;
     SpriteRenderer enemySprite;
     LevelManager levelManager;
+    Vector3 targetPos;
     bool alive = true;
     int currentLap = 0;
     int currentPath = 0;
@@ -32,6 +33,7 @@ public class EnemyMovement : MonoBehaviour
         player = FindObjectOfType<PlayerMovement>();
         enemySprite = GetComponent<SpriteRenderer>();
         levelManager = FindObjectOfType<LevelManager>();
+        targetPos = enemyPath[0].transform.position;
     }
 
     void Update()
@@ -40,9 +42,8 @@ public class EnemyMovement : MonoBehaviour
         {
             if (alive)
             {
-                Vector2 newPos = Vector2.MoveTowards(transform.position, enemyPath[currentPath].transform.position, enemySpeed * Time.deltaTime);
+                Vector2 newPos = Vector2.MoveTowards(transform.position, targetPos, enemySpeed * Time.deltaTime);
                 transform.position = new Vector3(newPos.x, newPos.y, transform.position.z);
-
 
 
                 var rotation = transform.rotation.eulerAngles;
@@ -50,15 +51,38 @@ public class EnemyMovement : MonoBehaviour
                 rotation.y = 0;
                 transform.rotation = Quaternion.Euler(rotation);
 
-                if (transform.position == enemyPath[currentPath].transform.position) {
+                if (transform.position == targetPos) {
                     currentPath++;
+
+                    if (currentPath >= enemyPath.Length)
+                    {
+                        currentPath = 0;
+                    }
+
+                    //generate a random point in the circle around the next path section with radius LookDistance until the point is on the track
+                    //set targetPos to that point
+                    Vector3 tempPos = new Vector3();
+                    bool validPosition = false;
+
+                    while (!validPosition)
+                    {
+                        tempPos.x = enemyPath[currentPath].transform.position.x + Random.Range(-lookDistance, lookDistance);
+                        tempPos.y = enemyPath[currentPath].transform.position.y + Random.Range(-lookDistance, lookDistance);
+                        
+                        Vector2Int checkPos = EnemyCoordsToImgCoords(tempPos);
+                        Color checkColor = currentTrack.pathImg.GetPixel(checkPos.x, checkPos.y);
+                        if (checkColor != Color.black)
+                        {
+                            validPosition = true;
+                        }
+                    }
+
+
+                    //targetPos = enemyPath[currentPath].transform.position;
+                    targetPos = tempPos;
                 }
 
-                if (currentPath >= enemyPath.Length) {
-                    currentPath = 0;
-                }
-
-                LookAt2D(enemyPath[currentPath].transform, rotationSpeed, FacingDirection.RIGHT);
+                LookAt2D(targetPos, rotationSpeed, FacingDirection.RIGHT);
 
                 Vector2 currPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
                 Vector2Int imgPos = EnemyCoordsToImgCoords(currPos);
@@ -88,9 +112,9 @@ public class EnemyMovement : MonoBehaviour
         RIGHT = 0
     }
     //source: https://answers.unity.com/questions/654222/make-sprite-look-at-vector2-in-unity-2d-1.html
-    void LookAt2D(Transform theTarget, float theSpeed, FacingDirection facing)
+    void LookAt2D(Vector3 theTarget, float theSpeed, FacingDirection facing)
     {
-        Vector3 vectorToTarget = theTarget.position - transform.position;
+        Vector3 vectorToTarget = theTarget - transform.position;
         float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
         angle -= (float)facing;
         Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -118,5 +142,11 @@ public class EnemyMovement : MonoBehaviour
             winText.SetActive(true);
             levelManager.NextLevel(2f);
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, lookDistance);
     }
 }
