@@ -1,6 +1,6 @@
 # RC Racing 
 
-RC Racing is a racing game made in Unity. It was made for the 2019 GMTK game jam, where the theme was "only one". I made a racing game in which you control an RC car. However, you have only one battery for the remote. So, you can either move forward and left or forward and right.
+RC Racing is a racing game made in Unity. It was made for the 2019 GMTK game jam, where the theme was "only one". I made a racing game in which you control an RC car. However, you have only one battery for the remote. So, you can either move forward and left or forward and right. More information about it can be found [here](https://daniel-marker.github.io/gmtk%20racing%20game.html)
 
 ### Playing the game
 The game itself is contained within FinalBuild.zip and only needs to be unzipped to be played.
